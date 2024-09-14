@@ -1,28 +1,31 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
-	author: "nobody",
-	pointsName: "points",
+	name: "A Tree of Treasure",
+	id: "HuntingForGold",
+	author: "Ult (TheUltimateCoiler)",
+	pointsName: "hero power",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	initialStartPoints: new Decimal (1), // Used for hard resets and new players
+	offlineLimit: 0,  // Active progression only
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "0.1",
+	name: "Preparations",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v0.1</h3><br>
+		- Added a layer.<br>
+		- Added 3 layer 1 buyables.<br>
+		- Added 5 layer 1 upgrades.<br>
+		- Added a layer 1 challenge.<br>
+		- Endgame: 1e9 hero power`
 
-let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+let winText = `To be continued in ???...`
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -42,7 +45,18 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
+	let gain = buyableEffect('hp', 11)
+	if (hasUpgrade('hp', 13) && !inChallenge('hp', 11)) gain = gain.mul(upgradeEffect('hp', 13))
+	if (gain.lt(1)) {
+		gain = gain.root(buyableEffect('hp', 13))
+	} else {
+		gain = gain.pow(buyableEffect('hp', 13))
+	}
+
+	gain = gain.times(buyableEffect('hp', 12))
+	if (hasUpgrade('hp', 11) && !inChallenge('hp', 11)) gain = gain.times(9)
+	if (hasUpgrade('hp', 12) && !inChallenge('hp', 11)) gain = gain.times(upgradeEffect('hp', 12))
+	if (hasChallenge('hp', 11)) gain = gain.times(200)
 	return gain
 }
 
@@ -56,7 +70,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal(1e9))
 }
 
 
@@ -70,7 +84,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(5) // A length of 5 seconds keeps it balanced
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
