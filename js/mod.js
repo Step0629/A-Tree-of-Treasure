@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "A Tree of Treasure",
 	id: "HuntingForGold",
-	author: "Ult (TheUltimateCoiler)",
+	author: "Coiler (TheUltimateCoiler)",
 	pointsName: "hero power",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -13,11 +13,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
-	name: "Preparations",
+	num: "0.2",
+	name: "Down we go!",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.2</h3><br>
+		- Added a layer.<br>
+		- Added 5 layer 1 upgrades.<br>
+		- Added a layer 1 challenge.<br>
+		- Added 2 layer 2 buyables.<br>
+		- Added 7 achievements.<br>
+		- Endgame: 1e28 hero power<br>
 	<h3>v0.1</h3><br>
 		- Added a layer.<br>
 		- Added 3 layer 1 buyables.<br>
@@ -47,16 +54,21 @@ function getPointGen() {
 
 	let gain = buyableEffect('hp', 11)
 	if (hasUpgrade('hp', 13) && !inChallenge('hp', 11)) gain = gain.mul(upgradeEffect('hp', 13))
-	if (gain.lt(1)) {
+	if (player.h.unlocked) gain = gain.times(tmp.h.effect)
+	
+	if (gain.lt(1) && !inChallenge('hp', 12)) {
 		gain = gain.root(buyableEffect('hp', 13))
-	} else {
+	} else if (gain.gte(1) && !inChallenge('hp', 12)) {
 		gain = gain.pow(buyableEffect('hp', 13))
 	}
 
-	gain = gain.times(buyableEffect('hp', 12))
-	if (hasUpgrade('hp', 11) && !inChallenge('hp', 11)) gain = gain.times(9)
-	if (hasUpgrade('hp', 12) && !inChallenge('hp', 11)) gain = gain.times(upgradeEffect('hp', 12))
-	if (hasChallenge('hp', 11)) gain = gain.times(200)
+	if (!inChallenge('hp', 12)) gain = gain.mul(buyableEffect('hp', 12))
+	if (hasUpgrade('hp', 11) && !inChallenge('hp', 11)) gain = gain.mul(9)
+	if (hasUpgrade('hp', 12) && !inChallenge('hp', 11)) gain = gain.mul(upgradeEffect('hp', 12))
+	if (hasChallenge('hp', 11)) gain = gain.mul(500)
+	if (hasUpgrade('hp', 23) && !inChallenge('hp', 11)) gain = gain.mul(2)
+	gain = gain.mul(buyableEffect('h', 11))
+
 	return gain
 }
 
@@ -70,7 +82,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal(1e9))
+	return player.points.gte(new Decimal(1e28))
 }
 
 
