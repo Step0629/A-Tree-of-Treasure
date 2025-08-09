@@ -1,5 +1,5 @@
 let modInfo = {
-	name: "A Tree of Treasure",
+	name: "The Fantasy Tree",
 	id: "HuntingForGold",
 	author: "Coiler (TheUltimateCoiler)",
 	pointsName: "hero power",
@@ -13,11 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "Down we go!",
+	num: "0.21",
+	name: "Lore",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.21</h3><br>
+		- Added lore to every layer.
+		- Fixed a softlock involving entering challenges so it doesn't set your hero power to 0
 	<h3>v0.2</h3><br>
 		- Renamed the mod from \"A Tree of Treasure\" to \"The Fantasy Tree\".<br>
 		- Added a layer.<br>

@@ -9,12 +9,27 @@ addLayer("hp", {
     tooltip: "The layer that starts it all.",
     color: "#F5F2A4",
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    tabFormat: [
-        ["display-text", function() { return 'You have ' + format(player.points) + ' hero power' }],
-        "buyables",
-        "upgrades",
-        "challenges"
-    ],
+    tabFormat: {
+        Lore: {
+            content: [
+                ["infobox", "lorehp"]
+            ]
+        },
+        Main: {
+            content: [
+                ["display-text", () => `You have ${format(player.points)} hero power`],
+                "buyables",
+                "upgrades",
+                "challenges"
+            ]
+        }
+    },
+    infoboxes: {
+        lorehp: {
+            title: "Lore",
+            body() { return "Once upon a time, there was a villager in the town of Plotagon. Its citizens thrived and lived happy lives. But then... something destroyed Plotagon and killed half of its population. The remaining was forced to flee into a nearby castle. The queen decided to choose a random villager to be the hero. Will the villager defeat the monster? Find out by buying these buyables and upgrades." }
+        }
+    },
     upgrades: {
         11: {
             title: "Thinking of Adventuring Alone",
@@ -208,7 +223,7 @@ addLayer("hp", {
             rewardDescription: "Multiply hero power gain by 500x. Unlock a new layer.",
             canComplete: function() {return player.points.gte(350)},
             unlocked() { return hasUpgrade('hp', 15) },
-            onEnter() { player.points = Decimal.dZero }
+            onEnter() { player.points = new Decimal(1) }
         },
         12: {
             name: "Battling",
@@ -217,7 +232,7 @@ addLayer("hp", {
             rewardDescription: "Square \"Going to the Queen's Castle\"'s effect.",
             canComplete: function() {return player.points.gte(5e9)},
             unlocked() { return hasUpgrade('hp', 24) },
-            onEnter() { player.points = Decimal.dZero }
+            onEnter() { player.points = new Decimal(1) }
         }
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -260,15 +275,30 @@ addLayer("h", {
     baseResource: "hero power", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    tabFormat: [
-        "main-display",
-        "prestige-button",
-        ["display-text", function() { return `You have ${format(player.h.points)} meters of depth<br>
-            Both hole buyables increase in cost if you buy one of them, but you will not spend any depth.` }],
-        "blank",
-        "milestones",
-        "buyables"
-    ],
+    tabFormat: {
+        Lore: {
+            content: [
+                ["infobox", "loreh"]
+            ]
+        },
+        Main: {
+            content: [
+                "main-display",
+                "prestige-button",
+                ["display-text", function() { return `You have ${format(player.h.points)} meters of depth<br>
+                Both hole buyables increase in cost if you buy one of them, but you will not spend any depth.` }],
+                "blank",
+                "milestones",
+                "buyables"
+            ]
+        },
+    },
+    infoboxes: {
+        loreh: {
+            title: "Digging",
+            body() { return "Looks like the monster's henchmen where the attack happened was at the other side of a wall they built. You need to find a way to go around it. Do you know what can help with the problem? That's right, a shovel can let you create a hole, so you can dig around it. Use these buyables to power up your shovel." }
+        }
+    },
     base: 100,
     exponent: 1, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
